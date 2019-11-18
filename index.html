@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Circle</title>
+</head>
+<style>
+    .round_menu {
+        /* padding: 100px; */
+        position: relative;
+        margin: 100px;
+    }
+    
+    .round_menu__item {
+        display: block;
+        width: 80px;
+        height: 80px;
+        left: 0;
+        top: 0;
+        background-color: rgb(40, 20, 120);
+        position: absolute;
+        text-transform: uppercase;
+        color: #fff;
+        text-align: center;
+        line-height: 80px;
+        border-radius: 50%;
+        font-family: Verdana;
+        user-select: none;
+        transition: .2s;
+    }
+    .round_menu__call {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        background-color: rgb(40, 20, 120);
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    .round_menu__call::before, .round_menu__call::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: block;
+        width: 40px;
+        height: 4px;
+        background-color: #fff;
+        transform-origin: center center;
+        transition: .4s;
+    }
+    .round_menu__call::before {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    .round_menu__call::after {
+        transform: translate(-50%, -50%) rotate(90deg);
+    }
+    .round_menu__call.is-active::before {
+        transform: translate(-50%, -50%) rotate(225deg);
+    }
+    .round_menu__call.is-active::after {
+        transform: translate(-50%, -50%) rotate(315deg);
+    }
+</style>
+<body>
+    
+    
+    <div class="round_menu">
+        <div class="round_menu__items">
+                <div class="round_menu__item">Vue</div>
+                <div class="round_menu__item">React</div>
+                <div class="round_menu__item">Angular</div>
+                <div class="round_menu__item">Slim</div>
+                <div class="round_menu__item">Slim</div>
+                <div class="round_menu__item">Slim</div>
+        </div>
+       <div class="round_menu__call"></div>
+    </div>
+
+
+    <script>
+       
+        class RoundMenu {
+            constructor(menu, menuItems, menuBtn, options) {
+                this.menu = typeof menu === 'string' ? document.querySelector(menu) : menu;
+                this.menuItems = typeof menuItems === 'string' ? [...this.menu.querySelectorAll(menuItems)] : [...menuItems]; 
+                this.menuBtn = typeof menuBtn === 'string' ? this.menu.querySelector(menuBtn) : menuBtn;
+                const defaultOpts = {
+                    radius: 100
+                }
+                this.opts = {...defaultOpts, ...options}
+                this.length = this.menuItems.length;
+                this.arc = (2 * Math.PI) / this.length;
+                this.active = false;
+
+                this.listeners()
+            }
+
+            listeners () {
+                this.menuBtn.addEventListener('click',  e => {
+                    e.preventDefault();
+
+                    this.menuBtn.classList.toggle('is-active');
+                    this.active = !this.active;
+
+                    if(this.active) {
+                        for(let i = 0; i < this.length; i++) {
+                            let angle = i * this.arc;
+                            this.menuItems[i].style.left = this.opts.radius * Math.cos(angle) + 'px';
+                            this.menuItems[i].style.top =  this.opts.radius * Math.sin(angle) + 'px';
+                        }
+                    } else {
+                        for(let i = 0; i < this.length; i++) {
+                            
+                            this.menuItems[i].style.left = '';
+                            this.menuItems[i].style.top = '';
+                        }
+                    }
+
+                })
+            }
+        }
+
+        const roundCall = document.querySelector('.round_menu__call');
+        const menuItems = document.querySelectorAll('.round_menu__item')
+        new RoundMenu('.round_menu', menuItems, roundCall, {
+            // radius: 80
+        });
+ 
+        
+    
+    </script>
+
+</body>
+</html>
